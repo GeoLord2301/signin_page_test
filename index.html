@@ -27,16 +27,16 @@
     </div>
 
     <script>
-        // 1. PASTE YOUR COPIED GOOGLE CLIENT ID KEY INSIDE THE QUOTES
+        // 1. PASTE YOUR LONG GOOGLE CLIENT ID HERE
         const CLIENT_ID = "481435116900-j182qnaogiofd90p16fbhihovnvtnn65.apps.googleusercontent.com"; 
         const REDIRECT_URI = "https://github.io";
 
         // 2. Generate standard clean URL request query path
-        const googleAuthUrl = `https://google.com?` +
+        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
             `client_id=${CLIENT_ID}&` +
             `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
             `response_type=token&` +
-            `scope=${encodeURIComponent('https://googleapis.com https://googleapis.com')}&` +
+            `scope=${encodeURIComponent('https://googleapis.com https://www.googleapis.com/auth/userinfo.email')}&` +
             `include_granted_scopes=true&` +
             `state=pass-through-value`;
 
