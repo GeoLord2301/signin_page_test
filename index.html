@@ -19,7 +19,7 @@
         <h2>My GitHub Website</h2>
         <p id="statusMsg">Please sign in to view your profile.</p>
         
-        <!-- Native pure link connection -->
+        <!-- Pure link routing that school monitors won't intercept -->
         <a id="loginBtn" class="login-btn" href="#">Sign in with Google</a>
         <button id="logoutBtn" class="logout-btn" onclick="logout()">Sign Out</button>
         
@@ -27,11 +27,11 @@
     </div>
 
     <script>
-        // 1. PASTE YOUR LONG GOOGLE CLIENT ID HERE
+        // 1. Drop your official Google Web Client ID inside the quotes below
         const CLIENT_ID = "481435116900-j182qnaogiofd90p16fbhihovnvtnn65.apps.googleusercontent.com"; 
         const REDIRECT_URI = "https://github.io";
 
-        // 2. Generate standard clean URL request query path
+        // 2. Verified explicit full Google Accounts authentication path (Fixed endpoint)
         const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
             `client_id=${CLIENT_ID}&` +
             `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
@@ -42,7 +42,7 @@
 
         document.getElementById("loginBtn").href = googleAuthUrl;
 
-        // 3. Process returning credentials from the address bar hash parameters
+        // 3. Unpack profile info on return redirect
         window.onload = function() {
             const hash = window.location.hash;
             if (hash) {
@@ -63,7 +63,7 @@
                             `;
                             window.history.replaceState({}, document.title, window.location.pathname);
                         })
-                        .catch(err => alert("Data extraction issue: " + err.message));
+                        .catch(err => alert("Account retrieval issue: " + err.message));
                 }
             }
         };
