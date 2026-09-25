@@ -19,34 +19,30 @@
         <h2>My GitHub Website</h2>
         <p id="statusMsg">Please sign in to view your profile.</p>
         
-        <!-- Native hyperlink that steps completely over automated script block filters -->
+        <!-- Native pure link connection -->
         <a id="loginBtn" class="login-btn" href="#">Sign in with Google</a>
         <button id="logoutBtn" class="logout-btn" onclick="logout()">Sign Out</button>
         
-        <!-- Profile Container -->
         <div id="userProfile" style="margin-top:20px;"></div>
     </div>
 
     <script>
-        // 1. Direct API mapping architecture from your screen keys
-        const API_KEY = "AIzaSyBkyDE2GmFOI90AhNx8peR3Heh4daeVdB8"; 
-        const PROJECT_ID = "test-f1406";
+        // 1. PASTE YOUR COPIED GOOGLE CLIENT ID KEY INSIDE THE QUOTES
+        const CLIENT_ID = "481435116900-j182qnaogiofd90p16fbhihovnvtnn65.apps.googleusercontent.com"; 
         const REDIRECT_URI = "https://github.io";
 
-        // 2. Generate native Google accounts landing page URL path
-        // Using your Project's active token to negotiate directly with Google authentication
+        // 2. Generate standard clean URL request query path
         const googleAuthUrl = `https://google.com?` +
-            `client_id=${PROJECT_ID}.apps.googleusercontent.com&` +
+            `client_id=${CLIENT_ID}&` +
             `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
             `response_type=token&` +
             `scope=${encodeURIComponent('https://googleapis.com https://googleapis.com')}&` +
             `include_granted_scopes=true&` +
-            `state=${API_KEY}`;
+            `state=pass-through-value`;
 
-        // Assign the clean query link directly to the button element
         document.getElementById("loginBtn").href = googleAuthUrl;
 
-        // 3. Process the authorization parameters returned back in the URL bar hash
+        // 3. Process returning credentials from the address bar hash parameters
         window.onload = function() {
             const hash = window.location.hash;
             if (hash) {
@@ -54,7 +50,6 @@
                 const accessToken = params.get("access_token");
 
                 if (accessToken) {
-                    // Pull standard open profile metrics natively using native browser fetch routing
                     fetch(`https://googleapis.com{accessToken}`)
                         .then(response => response.json())
                         .then(user => {
@@ -66,12 +61,9 @@
                                 <h3>Hello, ${user.name}!</h3>
                                 <p style="color: #666; font-size: 14px;">${user.email}</p>
                             `;
-                            // Clean up hash parameters out of your address bar
                             window.history.replaceState({}, document.title, window.location.pathname);
                         })
-                        .catch(err => {
-                            alert("Login verification failed: " + err.message);
-                        });
+                        .catch(err => alert("Data extraction issue: " + err.message));
                 }
             }
         };
