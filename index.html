@@ -7,10 +7,9 @@
     <style>
         body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
         .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 350px; width: 100%; }
-        button { background-color: #4285F4; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px; }
-        button:hover { background-color: #357ae8; }
-        #logoutBtn { background-color: #d93025; }
-        #logoutBtn:hover { background-color: #b8251b; }
+        .login-btn { display: inline-block; background-color: #4285F4; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 15px; }
+        .login-btn:hover { background-color: #357ae8; }
+        .logout-btn { background-color: #d93025; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px; display: none; }
         .profile-img { border-radius: 50%; width: 70px; height: 70px; margin-top: 15px; border: 3px solid #4285F4; }
     </style>
 </head>
@@ -20,69 +19,69 @@
         <h2>My GitHub Website</h2>
         <p id="statusMsg">Please sign in to view your profile.</p>
         
-        <!-- Auth Buttons -->
-        <button id="loginBtn">Sign in with Google</button>
-        <button id="logoutBtn" style="display:none;">Sign Out</button>
+        <!-- Native hyperlink that steps completely over automated script block filters -->
+        <a id="loginBtn" class="login-btn" href="#">Sign in with Google</a>
+        <button id="logoutBtn" class="logout-btn" onclick="logout()">Sign Out</button>
         
         <!-- Profile Container -->
         <div id="userProfile" style="margin-top:20px;"></div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://gstatic.com";
+    <script>
+        // 1. Direct API mapping architecture from your screen keys
+        const API_KEY = "AIzaSyBkyDE2GmFOI90AhNx8peR3Heh4daeVdB8"; 
+        const PROJECT_ID = "test-f1406";
+        const REDIRECT_URI = "https://github.io";
 
-        // ⚠️ PASTE YOUR ACTUAL CONFIGURATION KEYS HERE
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkyDE2GmFOI9OAhNx8pER3Heh4daeVdB8",
-            authDomain: "test-f1406.firebaseapp.com",
-            projectId: "test-f1406",
-            storageBucket: "test-f1406.firebasestorage.app",
-            messagingSenderId: "630847859570",
-            appId: "1:630847859570:web:44e7f3f09d5f3a4a300beb"
+        // 2. Generate native Google accounts landing page URL path
+        // Using your Project's active token to negotiate directly with Google authentication
+        const googleAuthUrl = `https://google.com?` +
+            `client_id=${PROJECT_ID}.apps.googleusercontent.com&` +
+            `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+            `response_type=token&` +
+            `scope=${encodeURIComponent('https://googleapis.com https://googleapis.com')}&` +
+            `include_granted_scopes=true&` +
+            `state=${API_KEY}`;
+
+        // Assign the clean query link directly to the button element
+        document.getElementById("loginBtn").href = googleAuthUrl;
+
+        // 3. Process the authorization parameters returned back in the URL bar hash
+        window.onload = function() {
+            const hash = window.location.hash;
+            if (hash) {
+                const params = new URLSearchParams(hash.substring(1));
+                const accessToken = params.get("access_token");
+
+                if (accessToken) {
+                    // Pull standard open profile metrics natively using native browser fetch routing
+                    fetch(`https://googleapis.com{accessToken}`)
+                        .then(response => response.json())
+                        .then(user => {
+                            document.getElementById('loginBtn').style.display = 'none';
+                            document.getElementById('logoutBtn').style.display = 'inline-block';
+                            document.getElementById('statusMsg').textContent = "Welcome back!";
+                            document.getElementById('userProfile').innerHTML = `
+                                <img src="${user.picture}" class="profile-img" alt="Profile Picture">
+                                <h3>Hello, ${user.name}!</h3>
+                                <p style="color: #666; font-size: 14px;">${user.email}</p>
+                            `;
+                            // Clean up hash parameters out of your address bar
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        })
+                        .catch(err => {
+                            alert("Login verification failed: " + err.message);
+                        });
+                }
+            }
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userProfile = document.getElementById('userProfile');
-        const statusMsg = document.getElementById('statusMsg');
-
-        loginBtn.addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("Success!", result.user);
-                }).catch((error) => {
-                    alert("Login failed: " + error.message);
-                });
-        });
-
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                userProfile.innerHTML = "";
-            });
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-                statusMsg.textContent = "Welcome back!";
-                userProfile.innerHTML = `
-                    <img src="${user.photoURL}" class="profile-img" alt="Profile Picture">
-                    <h3>Hello, ${user.displayName}!</h3>
-                    <p style="color: #666; font-size: 14px;">${user.email}</p>
-                `;
-            } else {
-                loginBtn.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-                statusMsg.textContent = "Please sign in to view your profile.";
-                userProfile.innerHTML = "";
-            }
-        });
+        function logout() {
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('userProfile').innerHTML = "";
+            document.getElementById('statusMsg').textContent = "Please sign in to view your profile.";
+        }
     </script>
 </body>
 </html>
