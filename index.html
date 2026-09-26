@@ -36,7 +36,7 @@
             `client_id=${CLIENT_ID}&` +
             `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
             `response_type=token&` +
-            `scope=${encodeURIComponent('https://googleapis.com https://www.googleapis.com/auth/userinfo.email')}&` +
+            `scope=${encodeURIComponent('openid https://googleapis.com')}&` +
             `include_granted_scopes=true&` +
             `state=pass-through-value`;
 
