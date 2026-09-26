@@ -36,7 +36,7 @@
             `client_id=${CLIENT_ID}&` +
             `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
             `response_type=token&` +
-            `scope=${encodeURIComponent('openid https://googleapis.com')}&` +
+            `scope=${encodeURIComponent('https://www.googleapis.com/auth/userinfo.email')}&` +
             `include_granted_scopes=true&` +
             `state=pass-through-value`;
 
@@ -50,7 +50,7 @@
                 const accessToken = params.get("access_token");
 
                 if (accessToken) {
-                    fetch(`https://googleapis.com{accessToken}`)
+                    fetch(`https://www.googleapis.com/auth/userinfo.email{accessToken}`)
                         .then(response => response.json())
                         .then(user => {
                             document.getElementById('loginBtn').style.display = 'none';
